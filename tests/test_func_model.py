@@ -1,5 +1,5 @@
 
-from abelha import bicone
+from abelha import modelo
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -7,7 +7,7 @@ def test_velocity():
     r = np.linspace(0, 10, 100)
     vmax = 800
     rend = 5
-    v = bicone.velocity(r, vmax, rend)
+    v = modelo.velocity(r, vmax, rend)
 
     assert v[-1] == 0, "Velocity at the edge should be zero"
 
@@ -25,7 +25,7 @@ def test_rotate_coordinates_and_velocity():
     inc_deg = 30.0
     pa_deg = 45.0
 
-    Xr, Yr, Zr, vxr, vyr, vzr = bicone.rotate_coordinates_and_velocity(X, Y, Z, vx, vy, vz, inc_deg, pa_deg)
+    Xr, Yr, Zr, vxr, vyr, vzr = modelo.rotate_coordinates_and_velocity(X, Y, Z, vx, vy, vz, inc_deg, pa_deg)
 
     assert vy[-1] != vyr[-1]
     assert vz[-1] != vzr[-1]
