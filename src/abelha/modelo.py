@@ -71,7 +71,7 @@ def rotate_coordinates_and_velocity(X, Y, Z, vx, vy, vz, inc_deg, pa_deg):
     Ry, Rz = rotation_matrix(inc_deg, pa_deg)
 
 
-    # 1) inclinação em torno de x
+    # 1) inclinação em torno de y
     Xr = Ry[0,0]*X + Ry[0,1]*Y + Ry[0,2]*Z
     Yr = Ry[1,0]*X + Ry[1,1]*Y + Ry[1,2]*Z
     Zr = Ry[2,0]*X + Ry[2,1]*Y + Ry[2,2]*Z
@@ -94,6 +94,36 @@ def rotate_coordinates_and_velocity(X, Y, Z, vx, vy, vz, inc_deg, pa_deg):
     v_los = vzrr  
 
     return Xrr, Yrr, Zrr, vxrr, vyrr, v_los
+
+def normal_do_disco(i_disk_deg, pa_disk_deg):
+    """Versor normal ao plano de poeira, no referencial do observador.
+
+    O sinal e fixado para n apontar para o observador (n_z >= 0).
+    """
+    n = np.array([0.0, 0.0, 1.0])
+ 
+    # rotation_matrix 
+    Ry, Rz = rotation_matrix(i_disk_deg, pa_disk_deg)
+ 
+    nxr = Ry[0, 0]*n[0] + Ry[0, 1]*n[1] + Ry[0, 2]*n[2]
+    nyr = Ry[1, 0]*n[0] + Ry[1, 1]*n[1] + Ry[1, 2]*n[2]
+    nzr = Ry[2, 0]*n[0] + Ry[2, 1]*n[1] + Ry[2, 2]*n[2]
+ 
+    nxrr = Rz[0, 0]*nxr + Rz[0, 1]*nyr + Rz[0, 2]*nzr
+    nyrr = Rz[1, 0]*nxr + Rz[1, 1]*nyr + Rz[1, 2]*nzr
+    nzrr = Rz[2, 0]*nxr + Rz[2, 1]*nyr + Rz[2, 2]*nzr
+ 
+    n = np.array([nxrr, nyrr, nzrr])
+    if n[2] < 0:
+        n = -n
+    return n
+
+
+
+def emissividade(r, rend, tau_flux=5.0):
+    """Decaimento exponencial do fluxo com a distancia radial (Bae & Woo 2016)."""
+    return np.exp(-tau_flux * r / rend)
+
 
 def campo_v_los(v_los, Xr, Yr, Zr, mask, extent, N):
 
