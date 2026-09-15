@@ -30,3 +30,21 @@ def test_rotate_coordinates_and_velocity():
     assert vy[-1] != vyr[-1]
     assert vz[-1] != vzr[-1]
 
+def test_normal_do_disco():
+    inc_deg = 30.0
+    pa_deg = 45.0
+
+    n = modelo.normal_do_disco(inc_deg, pa_deg)
+    assert n[2] > 0, "O vetor normal ao disco deve ter componente z positiva após a rotação"
+
+
+def test_emissividade():
+    N = 10
+    extent = 5
+    X, Y, Z, r, r_safe = modelo.grade_3d(N, extent)
+
+    rend = 5
+    emissivity = modelo.emissividade(r_safe, rend)
+
+    assert emissivity[r > rend].max() < emissivity[r <= rend].min()
+    assert np.all(emissivity[r <= rend] != 0)
